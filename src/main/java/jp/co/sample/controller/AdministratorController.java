@@ -1,7 +1,10 @@
 package jp.co.sample.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,6 +26,9 @@ public class AdministratorController {
 	@Autowired
 	private AdministratorService administratorService;
 	
+	@Autowired
+	private HttpSession session;
+	
 	/**
 	 * InsertAdministratorFormをインスタンス化しそのままreturnする.
 	 * 
@@ -39,9 +45,9 @@ public class AdministratorController {
 	}
 	
 	/**
-	 * 「administrator/insert.html」にフォワードする.
+	 * 管理者情報登録画面にフォワードする.
 	 * 
-	 * @return 「administrator/insert.html」
+	 * @return 管理者情報登録画面
 	 */
 	@RequestMapping("/toInsert")
 	public String toInsert() {
@@ -51,8 +57,8 @@ public class AdministratorController {
 	/**
 	 * 管理者情報を登録する.
 	 * 
-	 * @param form 管理者情報登録に
-	 * @return
+	 * @param form リクエストパラメータ
+	 * @return ログイン画面にリダイレクト
 	 */
 	@RequestMapping("/insert")
 	public String insert(InsertAdministratorForm form) {
@@ -64,8 +70,33 @@ public class AdministratorController {
 		return "redirect:/";
 	}
 	
+	/**
+	 * 
+	 * ログイン画面にフォワードする.
+	 * 
+	 * @return ログイン画面
+	 */
 	@RequestMapping("/")
 	public String toLogin() {
 		return "administrator/login";
+	}
+	
+	/**
+	 * ログインをする.
+	 * 
+	 * @param form ログイン時に使用するフォーム
+	 * @param model　リクエストスコープ
+	 * @return ログイン成功なら従業員情報一覧にフォワードし、失敗ならエラーメッセージをリクエストスコープにセットする
+	 */
+	@RequestMapping("/login")
+	public String login(LoginForm form, Model model) {
+		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
+		if(administrator == null) {
+			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+			return toLogin();
+		} else {
+			session.setAttribute("administratorName", administrator.getName());
+		}
+		return "forward:/employee/showList";
 	}
 }
