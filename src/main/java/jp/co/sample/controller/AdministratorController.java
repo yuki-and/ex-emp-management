@@ -5,8 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jp.co.sample.domain.Administrator;
 import jp.co.sample.form.InsertAdministratorForm;
-import jp.co.sample.repository.AdministratorRepository;
+import jp.co.sample.service.AdministratorService;
 
 /**
  * 管理者関連機能の処理の制御を行うコントローラ.
@@ -19,7 +20,7 @@ import jp.co.sample.repository.AdministratorRepository;
 public class AdministratorController {
 
 	@Autowired
-	private AdministratorRepository administratorRepository;
+	private AdministratorService administratorService;
 	
 	/**
 	 * InsertAdministratorFormをインスタンス化しそのままreturnする.
@@ -41,5 +42,20 @@ public class AdministratorController {
 		return "administrator/insert";
 	}
 	
+	/**
+	 * 管理者情報を登録する.
+	 * 
+	 * @param form 管理者情報登録に
+	 * @return
+	 */
+	@RequestMapping("/insert")
+	public String insert(InsertAdministratorForm form) {
+		Administrator administrator = new Administrator();
+		administrator.setName(form.getName());
+		administrator.setMailAddress(form.getMailAddress());
+		administrator.setPassword(form.getPassword());
+		administratorService.insert(administrator);
+		return "redirect:/";
+	}
 	
 }
