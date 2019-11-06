@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 import jp.co.sample.domain.Administrator;
 
 /**
- * @author yukiando
+ * administratorsテーブルを操作するリポジトリ.
  *
- * administratorsテーブルを操作するリポジトリ
+ * @author yukiando
  */
 @Repository
 public class AdministratorRepository {
@@ -32,7 +32,11 @@ public class AdministratorRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 	
-	/**	管理者情報を挿入するメソッド */
+	/**
+	 * 管理者情報を挿入する.
+	 * 
+	 * @param administrator 管理者情報
+	 */
 	public void insert(Administrator administrator) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(administrator);
 		String insertSql = "INSERT INTO administrators(name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependent_count)"
@@ -40,21 +44,23 @@ public class AdministratorRepository {
 		template.update(insertSql, param);
 	}
 	
-	/**	管理者情報を取得するメソッド */
+	/**
+	 * メールアドレスとパスワードから管理者情報を取得する.
+	 * 
+	 * @param mailAddress メールアドレス
+	 * @param password パスワード
+	 * @return 管理者情報 もし存在しない場合はnullを返す
+	 */
 	public Administrator findByMailAddressAndPassword(String mailAddress, String password) {
-		if(mailAddress == null || password == null) {
-			return null;
-		} else {
-			String sql = "SELECT id, name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependent_count"
-					+ "FROM addministrators WHERE mail_address = :mailAddress AND password = :password";
-			SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress).addValue("password", password);
-			
-			List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
-			 if(administratorList.size() == 0) {
-				 return null;
-			 } else {
-				 return administratorList.get(0);
-			 }
-		}
+		String sql = "SELECT id, name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependent_count"
+				+ "FROM addministrators WHERE mail_address = :mailAddress AND password = :password";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress).addValue("password", password);
+		
+		List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
+		 if(administratorList.size() == 0) {
+			 return null;
+		 } else {
+			 return administratorList.get(0);
+		 }
 	}
 }
