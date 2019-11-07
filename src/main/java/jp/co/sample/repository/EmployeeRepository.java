@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import jp.co.sample.domain.Employee;
 
 /**
- * employeeテーブルを操作するリポジトリ.
+ * employeesテーブルを操作するリポジトリ.
  * 
  * @author yukiando
  *
@@ -55,7 +55,7 @@ public class EmployeeRepository {
 	/**
 	 * 主キーから従業員情報を取得する.
 	 * 
-	 * @param id
+	 * @param id ID
 	 * @return 従業員情報
 	 */
 	public Employee load(Integer id) {
@@ -68,11 +68,12 @@ public class EmployeeRepository {
 	/**
 	 * 従業員情報の扶養人数を変更する.
 	 * 
-	 * @param employee 従業員
+	 * @param employee 従業員情報
 	 */
 	public void update(Employee employee) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
 		String updateSql = "UPDATE employees SET dependents_count = :dependentsCount WHERE id = :id";
+		
 		template.update(updateSql, param);
 	}
 }

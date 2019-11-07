@@ -25,10 +25,10 @@ public class AdministratorController {
 
 	@Autowired
 	private AdministratorService administratorService;
-	
+
 	@Autowired
 	private HttpSession session;
-	
+
 	/**
 	 * InsertAdministratorFormをインスタンス化しそのままreturnする.
 	 * 
@@ -38,12 +38,12 @@ public class AdministratorController {
 	public InsertAdministratorForm setUpInsertAdministratorForm() {
 		return new InsertAdministratorForm();
 	}
-	
+
 	@ModelAttribute
 	public LoginForm setUpLoginForm() {
 		return new LoginForm();
 	}
-	
+
 	/**
 	 * 管理者情報登録画面にフォワードする.
 	 * 
@@ -53,7 +53,7 @@ public class AdministratorController {
 	public String toInsert() {
 		return "administrator/insert";
 	}
-	
+
 	/**
 	 * 管理者情報を登録する.
 	 * 
@@ -69,7 +69,7 @@ public class AdministratorController {
 		administratorService.insert(administrator);
 		return "redirect:/";
 	}
-	
+
 	/**
 	 * 
 	 * ログイン画面にフォワードする.
@@ -80,23 +80,22 @@ public class AdministratorController {
 	public String toLogin() {
 		return "administrator/login";
 	}
-	
+
 	/**
 	 * ログインをする.
 	 * 
-	 * @param form ログイン時に使用するフォーム
-	 * @param model　リクエストスコープ
-	 * @return ログイン成功なら従業員情報一覧にフォワードし、失敗ならエラーメッセージをリクエストスコープにセットする
+	 * @param form  ログイン時に使用するフォーム
+	 * @param model リクエストスコープ
+	 * @return ログイン成功なら従業員情報一覧にフォワードし、失敗ならログイン画面に戻る
 	 */
 	@RequestMapping("/login")
 	public String login(LoginForm form, Model model) {
 		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
-		if(administrator == null) {
+		if (administrator == null) {
 			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return toLogin();
-		} else {
-			session.setAttribute("administratorName", administrator.getName());
 		}
+		session.setAttribute("administratorName", administrator.getName());
 		return "forward:/employee/showList";
 	}
 }

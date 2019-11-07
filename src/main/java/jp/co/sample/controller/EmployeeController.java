@@ -46,7 +46,7 @@ public class EmployeeController {
 	/**
 	 * 従業員の詳細を表示する.
 	 * 
-	 * @param id
+	 * @param id ID
 	 * @param model　リクエストスコープ
 	 * @return　従業員情報
 	 */
@@ -56,4 +56,20 @@ public class EmployeeController {
 		model.addAttribute("employee", employee);
 		return "employee/detail";
 	}
+	
+	/**
+	 * 従業員情報を更新する.
+	 * 
+	 * @param form　従業員情報を更新するフォーム
+	 * @return　従業員一覧画面
+	 */
+	@RequestMapping("/update")
+	public String update(UpdateEmployeeForm form) {
+		Employee employee = new Employee();
+		employee.setId(Integer.parseInt(form.getId()));
+		employee.setDependentsCount(Integer.parseInt(form.getDependentsCount()));
+		employeeService.update(employee);
+		return "redirect:/employee/showList";
+	}
+
 }
