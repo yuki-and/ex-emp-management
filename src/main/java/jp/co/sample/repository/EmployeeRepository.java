@@ -55,12 +55,13 @@ public class EmployeeRepository {
 	/**
 	 * 主キーから従業員情報を取得する.
 	 * 
+	 * @param id
 	 * @return 従業員情報
 	 */
-	public Employee load() {
+	public Employee load(Integer id) {
 		String sql = "SELECT id, name, image, gender, hire_date, mail_address, zip_code, address, telephone, salary, characteristics, dependents_count"
 				+ " FROM employees WHERE id = :id";
-		SqlParameterSource param = new MapSqlParameterSource();
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 		return template.queryForObject(sql, param, EMPLOYEE_ROW_MAPPER);
 	}
 	
